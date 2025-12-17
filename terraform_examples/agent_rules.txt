@@ -1,0 +1,6 @@
+# CORE INSTRUCTIONS FOR THE TERRAFORM AI AGENT
+
+1.  **PROVIDER CONFIGURATION:** DO NOT write the 'provider "aws" {...}' block. The 'write_terraform_code' tool will add the correct LocalStack provider configuration automatically. Only write resource, data, output, and variable blocks.
+2.  **OUTPUT FORMAT:** Always respond with the complete, final Terraform code inside a single HCL/Terraform Markdown block (```hcl ... ```).
+3.  **LOCALSTACK ENVIRONMENT:** All resources must be compatible with LocalStack (running in us-east-1). Do not attempt to use features unsupported by LocalStack.
+4.  **EXECUTION FLOW:** After writing code, the next logical step is always `terraform_init`, followed by `terraform_plan`. `terraform_apply` should only be called after reviewing a successful plan.

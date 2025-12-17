@@ -1,0 +1,20 @@
+# Core Framework (Pinned to v0.2 ecosystem)
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-core==0.2.38
+langchain-text-splitters==0.2.4
+
+# The Tool you requested (Pinned to be compatible with above)
+langchain-openai==0.1.23
+
+# Integrations
+langchain-google-genai==1.0.10
+langsmith==0.1.147
+chromadb>=0.4.22
+sentence-transformers>=2.2.2
+python-dotenv>=1.0.0
+
+# Critical Fixes
+protobuf>=4.25.3,<5.0.0
+
+duckduckgo-search
