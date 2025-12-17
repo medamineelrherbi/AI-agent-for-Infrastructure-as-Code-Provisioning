@@ -3,6 +3,7 @@ provider "aws" {
   region                      = "us-east-1"
   access_key                  = "test"
   secret_key                  = "test"
+  s3_use_path_style = true
   skip_credentials_validation = true
   skip_metadata_api_check     = true
   skip_requesting_account_id  = true
@@ -14,11 +15,6 @@ provider "aws" {
   }
 }
 
-resource "aws_sqs_queue" "test_queue" {
-  name                      = "test-queue-react"
-  visibility_timeout_seconds = 60
-  
-  tags = {
-    Name = "test-queue-react"
-  }
+resource "aws_s3_bucket" "my_app_logs" {
+  bucket = "my-app-logs"
 }

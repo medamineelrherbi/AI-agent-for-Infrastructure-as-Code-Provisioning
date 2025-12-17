@@ -31,9 +31,10 @@ vectorstore = Chroma(
 retriever = vectorstore.as_retriever(search_kwargs={"k": 2})
 
 def query_knowledge_base(query: str):
-    docs = retriever.get_relevant_documents(query)
-    context = "\n\n".join([d.page_content for d in docs])
+    docs = retriever.invoke(query)
+    context = "\n\n".join(d.page_content for d in docs)
     return context
+
 
 # --- 2. Setup Terraform Tool ---
 tf_executor = TerraformExecutor()
@@ -67,38 +68,28 @@ tools = [
 
 model_name = "kwaipilot/kat-coder-pro:free"
 
-# --- 4. IMPROVED PROMPT TEMPLATE ---
-# We force the model to acknowledge it must use the Action/Action Input syntax.
-# this template is inspired by hwchase17/react from langchain hub
 template = """
-Answer the following questions as best you can. You have access to the following tools:
+You are a Terraform automation agent.
 
+You have access to the following tools:
 {tools}
 
-**CRITICAL RULES:**
-1. Do NOT output raw Terraform code. You must wrap the code inside the `Action Input` of the `Terraform_Apply` tool.
-2. Do NOT include `provider "aws"`. The tool adds this automatically.
-3. You must follow the format below exactly.
+You can ONLY use the following tool names:
+{tool_names}
 
-Format:
-
-Question: the input question you must answer
-Thought: you should always think about what to do
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer
-Final Answer: the final answer to the original input question
-
-Begin!
-
-Previous conversation history:
-{chat_history}
+STRICT RULES:
+- NEVER output Terraform code outside of Action Input.
+- NEVER include provider blocks.
+- Use EXACTLY one of the following outputs:
+  - Action + Action Input
+  - OR Final Answer
+- NEVER mix Action and Final Answer in the same response.
 
 Question: {input}
 Thought:{agent_scratchpad}
 """
+
+
 
 prompt = PromptTemplate.from_template(template)
 
@@ -116,7 +107,14 @@ agent = create_react_agent(llm, tools, prompt)
 # --- 6. CUSTOM ERROR HANDLER ---
 # This function fixes the loop by telling the LLM exactly what it did wrong.
 def _handle_error(error) -> str:
-    return "Format Error: You outputted raw code. You MUST use the format: Action: Terraform_Apply ... Action Input: <your_code_here>"
+    return (
+        "FORMAT ERROR.\n"
+        "You must respond with EITHER:\n"
+        "- Action: <tool>\n  Action Input: <input>\n"
+        "OR:\n"
+        "- Final Answer: <text>\n"
+        "Do not include Terraform code outside Action Input."
+    )
 
 def load_requirements():
     try:
@@ -138,21 +136,19 @@ agent_executor = AgentExecutor(
 )
 
 if __name__ == "__main__":
-    print("AI Agent is ready.")
-    
+    print("Terraform AI Agent is ready. Type 'exit' to quit.")
+
     while True:
         user_input = input("\nUser: ")
-        if user_input.lower() in ["exit", "quit"]:
+        if user_input.lower() in {"exit", "quit"}:
             break
-
+        
+        # CORRECTION : Tout ce bloc doit être indenté
         try:
-            response = agent_executor.invoke({
-                "input": user_input,
-                "chat_history": static_history_text  
-            })
-            
-            print(f"\nAgent: {response['output']}")
-            time.sleep(5)
-
+            # On vérifie que l'utilisateur n'a pas juste appuyé sur Entrée
+            if user_input.strip(): 
+                response = agent_executor.invoke({"input": user_input})
+                print(f"\nAgent: {response['output']}")
+                time.sleep(1)
         except Exception as e:
             print(f"Error: {e}")
