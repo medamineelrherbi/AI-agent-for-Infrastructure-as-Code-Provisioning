@@ -6,7 +6,24 @@ An advanced **DevOps AI Agent** designed to bridge the gap between natural langu
 
 ![Architecture Diagram](.\assets\architecture diagram.png)
 
+---
 
+## 🚀 Getting Started
+
+Follow these steps to set up the project on your local machine.
+
+### 1. Install Dependencies
+Ensure you have Python installed, then run the following command to install the required libraries:
+```bash
+pip install -r requirements.txt
+```
+### 2. Launch LocalStack
+This project requires a local AWS environment. Run the following Docker command to start LocalStack in detached mode:
+
+```bash
+docker run -d -p 4566:4566 -p 4571:4571 localstack/localstack
+```
+Note: Port 4566 is the main edge port for AWS services, and 4571 is typically used for specific services like Elasticsearch in older versions.
 
 ### 🧩 The Workflow: Simplified
 
