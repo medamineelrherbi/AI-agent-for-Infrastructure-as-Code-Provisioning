@@ -2,6 +2,12 @@
 
 An advanced **DevOps AI Agent** designed to bridge the gap between natural language requirements and **Infrastructure as Code (IaC)**. This system leverages a specialized coding LLM, a local RAG (Retrieval-Augmented Generation) system, and a custom execution engine to deploy AWS resources to **LocalStack**.
 
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/2cd6a5c8-b5da-4926-b8f9-9f0b157b2db5" width="100%" controls>
+    Your browser does not support the video tag.
+  </video>
+</p>
+
 ---
 
 ![Architecture Diagram](.\assets\architecture diagram.png)

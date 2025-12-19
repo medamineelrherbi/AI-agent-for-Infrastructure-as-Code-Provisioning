@@ -15,6 +15,13 @@ provider "aws" {
   }
 }
 
-resource "aws_s3_bucket" "my_app_logs" {
-  bucket = "my-app-logs"
+resource "aws_dynamodb_table" "agentDemoTable" {
+  name         = "agentDemoTable"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "usedID"
+
+  attribute {
+    name = "usedID"
+    type = "S"
+  }
 }
