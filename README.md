@@ -10,7 +10,7 @@ An advanced **DevOps AI Agent** designed to bridge the gap between natural langu
 
 ---
 
-![Architecture Diagram](.\assets\architecture diagram.png)
+![Architecture Diagram](\assets\architecture diagram.png)
 
 ---
 
